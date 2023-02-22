@@ -8,8 +8,11 @@
     <ul>
       <TodoItem
         v-for="(item, index) in items"
+        :key="index"
         :item="item"
+        :is-open="item === activeTodo"
         @opened-action="openedAction"
+        @resolved-action="resolvedAction"
       />
     </ul>
   </div>
@@ -32,13 +35,17 @@ export default {
 
   data() {
     return {
-      isActionOpened: false,
+      activeTodo: null,
     };
   },
 
   methods: {
-    openedAction(value) {
-      this.$data.isActionOpened = value;
+    openedAction(item) {
+      if (this.activeTodo === item) {
+        this.activeTodo = null;
+      } else {
+        this.activeTodo = item;
+      }
     },
   },
 

@@ -23,3 +23,10 @@ svg {
 svg path {
   @apply fill-primary transition-colors;
 }
+
+.c-line {
+  @apply relative after:absolute after:content-[''] after:h-0.5 after:w-full  after:top-[50%] after:left-0 after:opacity-0 after:bg-secondary after:transition-opacity;
+}
+.c-line-active {
+  @apply after:opacity-100 opacity-70;
+}
