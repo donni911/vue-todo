@@ -1,15 +1,6 @@
 <template>
-  <section class="h-full w-full max-w-[900px] mx-auto">
-    <div class="p-6 shadow-md shadow-primary rounded">
-      <input
-        name="search"
-        type="text"
-        class="rounded border-2 border-gray-200 w-full peer h-16 focus:ring-primary focus:border-primary dark:bg-slate-200"
-        :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)"
-      />
-      <TodoList :items="items || []" />
-    </div>
+  <section class="max-w-[400px] mx-auto mt-14 px-6">
+    <TodoList :items="items || []" />
   </section>
 </template>
 
@@ -23,7 +14,7 @@ export default {
       show: false,
       items: [
         {
-          title: "Wash a car",
+          title: "Wash a car ",
           recordingTime: new Date(),
           resolved: true,
         },
@@ -32,16 +23,16 @@ export default {
           recordingTime: new Date(),
           resolved: false,
         },
-        {
-          title: "Meet  with friend",
-          recordingTime: new Date(),
-          resolved: false,
-        },
-        {
-          title: "Code a pet-project",
-          recordingTime: new Date(),
-          resolved: false,
-        },
+        // {
+        //   title: "Meet  with friend",
+        //   recordingTime: new Date(),
+        //   resolved: false,
+        // },
+        // {
+        //   title: "Code a pet-project",
+        //   recordingTime: new Date(),
+        //   resolved: false,
+        // },
       ],
     };
   },

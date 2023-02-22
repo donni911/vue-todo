@@ -1,10 +1,17 @@
 <template>
-  <div>
-    <div class="p-4">
-      <ul class="mt-12">
-        <TodoItem v-for="(item, index) in items" :item="item" />
-      </ul>
+  <div class="mx-auto shadow-2xl shadow-primary-semi rounded-xl">
+    <div
+      class="p-6 bg-gradient-to-r from-primary-semi to-primary text-white rounded-t-xl"
+    >
+      {{ formatData }}
     </div>
+    <ul>
+      <TodoItem
+        v-for="(item, index) in items"
+        :item="item"
+        @opened-action="openedAction"
+      />
+    </ul>
   </div>
 </template>
 
@@ -18,8 +25,40 @@ export default {
       required: true,
     },
   },
+
   components: {
     TodoItem,
+  },
+
+  data() {
+    return {
+      isActionOpened: false,
+    };
+  },
+
+  methods: {
+    openedAction(value) {
+      this.$data.isActionOpened = value;
+    },
+  },
+
+  computed: {
+    formatData() {
+      let formatting = {
+        day: new Date().toLocaleString("en-GB", {
+          day: "numeric",
+        }),
+        month: new Date().toLocaleString("en-GB", {
+          month: "long",
+        }),
+        weekday: new Date().toLocaleString("en-GB", {
+          weekday: "long",
+        }),
+      };
+      return (
+        formatting.day + " " + formatting.month + ", " + formatting.weekday
+      );
+    },
   },
 };
 </script>
