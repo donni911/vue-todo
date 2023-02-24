@@ -12,7 +12,7 @@
         :item="item"
         :is-open="item === activeTodo"
         @opened-action="openedAction"
-        @resolved-action="resolvedAction"
+        @close="closeActiveTodo"
       />
     </ul>
   </div>
@@ -36,6 +36,7 @@ export default {
   data() {
     return {
       activeTodo: null,
+      active: null,
     };
   },
 
@@ -46,6 +47,10 @@ export default {
       } else {
         this.activeTodo = item;
       }
+    },
+
+    closeActiveTodo() {
+      this.activeTodo = null;
     },
   },
 

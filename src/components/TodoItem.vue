@@ -10,7 +10,7 @@
       </p>
     </div>
     <div class="flex items-center relative">
-      <button type="button " class="c-btn z-10" @click="toggleAction">
+      <button type="button" class="c-btn z-10" @click="toggleAction">
         <div
           class="w-full h-full absolute top-0 left-0 transition"
           :class="{ 'scale-0 opacity-0': isOpen }"
@@ -47,7 +47,7 @@
           <icon :name="'pen'"></icon>
         </button>
         <button
-          @click="closeAction"
+          @click="deleteAction"
           type="button"
           class="c-btn p-2 absolute top-0 right-0 opacity-0 transition-all pointer-events-none delay-200"
           :class="{
@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import store from "../store";
 import Icon from "./UI/Icon.vue";
 
 export default {
@@ -85,8 +86,18 @@ export default {
       this.$emit("openedAction", this.$props.item);
     },
 
+    handleClickOutside(event) {
+      if (this.$props.isOpen && !event.composedPath().includes(this.$el)) {
+        this.$emit("close");
+      }
+    },
+
     resolvedAction() {
       this.$props.item.resolved = !this.$props.item.resolved;
+    },
+
+    deleteAction() {
+      store.dispatch("deleteTask", this.$props.item);
     },
   },
 
@@ -104,6 +115,14 @@ export default {
         minute: "numeric",
       });
     },
+  },
+
+  mounted() {
+    document.addEventListener("click", this.handleClickOutside);
+  },
+
+  beforeUnmount() {
+    document.removeEventListener("click", this.handleClickOutside);
   },
 };
 </script>
