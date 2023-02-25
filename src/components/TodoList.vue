@@ -6,14 +6,22 @@
       {{ formatData }}
     </div>
     <ul>
-      <TodoItem
-        v-for="(item, index) in items"
-        :key="index"
-        :item="item"
-        :is-open="item === activeTodo"
-        @opened-action="openedAction"
-        @close="closeActiveTodo"
-      />
+      <template v-if="items.length">
+        <TodoItem
+          v-for="(item, index) in items"
+          :key="index"
+          :item="item"
+          :is-open="item === activeTodo"
+          @opened-action="openedAction"
+          @close="closeActiveTodo"
+        />
+      </template>
+      <li
+        v-else
+        class="p-6 flex items-center justify-between bg-white last:rounded-b-xl transition"
+      >
+        Start add todo's
+      </li>
     </ul>
   </div>
 </template>

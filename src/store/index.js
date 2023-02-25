@@ -11,6 +11,5 @@ const store = createStore({
     getters,
 });
 
-console.log(store);
 
 export default store;

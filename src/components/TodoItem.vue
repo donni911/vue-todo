@@ -5,7 +5,7 @@
   >
     <div class="mr-4">
       <span class="text-stone-500 font-thin">{{ computedTime }}</span>
-      <p class="c-line" :class="{ 'c-line-active': item.resolved }">
+      <p class="c-line break-all" :class="{ 'c-line-active': item.resolved }">
         {{ item.title }}
       </p>
     </div>
@@ -38,6 +38,7 @@
           <icon :name="'basic-tick'"></icon>
         </button>
         <button
+          @click="changeAction"
           type="button"
           class="c-btn p-2 absolute top-0 right-0 opacity-0 transition-all pointer-events-none delay-100"
           :class="{
@@ -90,6 +91,10 @@ export default {
       if (this.$props.isOpen && !event.composedPath().includes(this.$el)) {
         this.$emit("close");
       }
+    },
+
+    changeAction() {
+      this.$props.item.title = "resolved";
     },
 
     resolvedAction() {
