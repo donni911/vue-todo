@@ -5,24 +5,22 @@
     >
       {{ formatData }}
     </div>
-    <ul>
-      <template v-if="items.length">
-        <TodoItem
-          v-for="(item, index) in items"
-          :key="index"
-          :item="item"
-          :is-open="item === activeTodo"
-          @opened-action="openedAction"
-          @close="closeActiveTodo"
-        />
-      </template>
+    <TransitionGroup class="relative" name="list" tag="ul">
+      <TodoItem
+        v-for="item in items"
+        :key="item"
+        :item="item"
+        :is-open="item === activeTodo"
+        @opened-action="openedAction"
+        @close="closeActiveTodo"
+      />
       <li
-        v-else
-        class="p-6 flex items-center justify-between bg-white last:rounded-b-xl transition"
+        v-if="!items.length"
+        class="p-6 flex items-center justify-between bg-white last:rounded-b-xl transition-all"
       >
-        Start add todo's
+        What you want to do today?
       </li>
-    </ul>
+    </TransitionGroup>
   </div>
 </template>
 
@@ -82,3 +80,25 @@ export default {
   },
 };
 </script>
+
+<style>
+.list-move, /* apply transition to moving elements */
+.list-enter-active,
+.list-leave-active {
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.list-leave-active {
+  position: absolute;
+  min-height: 100px;
+  width: 100%;
+}
+</style>

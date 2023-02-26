@@ -1,40 +1,27 @@
 <template>
   <section class="max-w-[400px] mx-auto mt-14 px-6">
-    <div class="relative mb-4">
-      <input
-        class="w-full h-42 p-4 pr-14 rounded-xl"
-        type="text"
-        v-model="todoValue"
-        placeholder="Add todo task..."
-      />
-      <transition>
-        <button
-          v-show="todoValue"
-          @click="addTodoItem"
-          @keydown.="addTodoItem"
-          type="button"
-          class="c-btn p-2 absolute right-4 top-[50%] translate-y-[-50%]"
-        >
-          <icon :name="'basic-tick'"></icon>
-        </button>
-      </transition>
-    </div>
+    <input-add
+      v-model="todoValue"
+      :inputError="inputError"
+      @add-todo-item="addTodoItem"
+    />
     <TodoList :items="items || []" />
   </section>
 </template>
 
 <script>
+import InputAdd from "./components/UI/InputAdd.vue";
 import TodoList from "./components/TodoList.vue";
 import store from "./store";
-import icon from "./components/UI/Icon.vue";
 
 export default {
-  components: { TodoList, icon },
+  components: { TodoList, InputAdd },
 
   data() {
     return {
       show: false,
       todoValue: "",
+      inputError: false,
     };
   },
 
@@ -44,21 +31,40 @@ export default {
     },
   },
   methods: {
+    startTimer() {
+      this.inputError = true;
+
+      setTimeout(() => {
+        if (this.inputError) {
+          this.inputError = false;
+        }
+      }, 2000); // 2 seconds delay
+    },
+
     addTodoItem() {
-      if (!this.todoValue || this.todoValue.trim() == "") {
+      if (!this.todoValue || this.todoValue.trim() === "") {
         this.todoValue = "";
+
+        this.startTimer();
 
         return;
       }
 
       store.dispatch("addTask", {
         title: this.todoValue.trim(),
-        recordingTime: new Date(),
+        recordingTime: new Date().toLocaleTimeString("en-GB", {
+          hour: "numeric",
+          minute: "numeric",
+        }),
         resolved: false,
       });
 
       this.todoValue = "";
     },
+  },
+
+  created() {
+    store.dispatch("loadDataFromLocalStorage");
   },
 };
 </script>
