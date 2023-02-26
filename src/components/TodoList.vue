@@ -1,9 +1,32 @@
 <template>
   <div class="mx-auto shadow-2xl shadow-primary-semi rounded-xl">
     <div
-      class="p-6 bg-gradient-to-r from-primary-semi to-primary text-white rounded-t-xl"
+      class="p-6 bg-gradient-to-r grid grid-cols-[60%_40%] from-primary-semi to-primary text-white rounded-t-xl"
     >
-      {{ formatData }}
+      <div>
+        <span>Today</span>
+        <h6>
+          {{ formatData }}
+        </h6>
+      </div>
+      <transition name="fade">
+        <div v-if="items.length" class="flex items-center justify-end">
+          <button type="button" class="c-btn z-10" @click="resolveAll">
+            <div
+              class="w-full h-full p-2 top-0 left-0 transition scale-100 opacity-100"
+            >
+              <icon :name="'pen'"></icon>
+            </div>
+          </button>
+          <button type="button" class="c-btn z-10 ml-4" @click="deleteAll">
+            <div
+              class="w-full h-full p-2 top-0 left-0 transition scale-100 opacity-100"
+            >
+              <icon :name="'delete'"></icon>
+            </div>
+          </button>
+        </div>
+      </transition>
     </div>
     <TransitionGroup class="relative" name="list" tag="ul">
       <TodoItem
@@ -25,7 +48,9 @@
 </template>
 
 <script>
+import store from "../store";
 import TodoItem from "./TodoItem.vue";
+import Icon from "./UI/Icon.vue";
 
 export default {
   props: {
@@ -37,6 +62,7 @@ export default {
 
   components: {
     TodoItem,
+    Icon,
   },
 
   data() {
@@ -47,6 +73,14 @@ export default {
   },
 
   methods: {
+    resolveAll() {
+      store.commit("RESOLVE_TASKS");
+    },
+
+    deleteAll() {
+      store.commit("DELETE_TASKS");
+    },
+
     openedAction(item) {
       if (this.activeTodo === item) {
         this.activeTodo = null;

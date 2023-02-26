@@ -8,10 +8,13 @@
         <span class="text-stone-500 font-thin">{{ item.recordingTime }}</span>
       </div>
       <div class="flex flex-col">
+        <p class="c-line break-all" :class="{ 'c-line-active': item.resolved }">
+          {{ item.title }}
+        </p>
         <transition name="fade" mode="out-in">
           <input
-            class="focus:border-0 w-full border-primary-200 h-8 p-1 rounded-xl"
             v-show="editMode"
+            class="focus:border-0 mt-4 w-full border-primary-200 h-8 p-1 rounded-xl"
             v-model="editText"
             @keyup.enter="editTodo"
             ref="editInput"
@@ -19,89 +22,27 @@
             placeholder="Edit todo"
           />
         </transition>
-        <p class="c-line break-all" :class="{ 'c-line-active': item.resolved }">
-          {{ item.title }}
-        </p>
       </div>
     </div>
-    <div class="flex items-center relative">
-      <button type="button" class="c-btn z-10" @click="toggleAction">
-        <div
-          class="w-full h-full absolute top-0 left-0 transition"
-          :class="{ 'scale-0 opacity-0': isOpen }"
-        >
-          <icon :name="'options'"></icon>
-        </div>
-        <div
-          class="w-full h-full p-2 absolute top-0 left-0 transition scale-0 opacity-0"
-          :class="{ 'scale-100 opacity-100 ': isOpen }"
-        >
-          <icon :name="'close'"></icon>
-        </div>
-      </button>
-
-      <div class="absolute top-0 w-full h-full right-0">
-        <button
-          @click="resolvedAction"
-          type="button"
-          class="c-btn p-2 absolute top-0 right-0 opacity-0 transition-all pointer-events-none"
-          :class="{
-            '-translate-x-8 -translate-y-10 opacity-100 pointer-events-auto':
-              isOpen,
-          }"
-        >
-          <icon :name="'basic-tick'"></icon>
-        </button>
-        <transition name="fade" mode="out-in">
-          <button
-            v-if="!editMode"
-            @click="changeOpenAction"
-            type="button"
-            class="c-btn p-2 absolute top-0 right-0 opacity-0 transition-all pointer-events-none delay-100"
-            :class="{
-              '-translate-x-14 opacity-100 pointer-events-auto': isOpen,
-            }"
-          >
-            <icon :name="'pen'"></icon>
-          </button>
-          <button
-            v-else
-            @click="editTodo"
-            type="button"
-            class="c-btn p-2 absolute top-0 right-0 opacity-0 transition-all pointer-events-none delay-100"
-            :class="{
-              '-translate-x-14 opacity-100 pointer-events-auto': isOpen,
-            }"
-          >
-            <icon
-              :classes="'[&>g>path]:fill-secondary'"
-              :name="'basic-tick'"
-            ></icon>
-          </button>
-        </transition>
-        <button
-          @click="deleteAction"
-          type="button"
-          class="c-btn p-2 absolute top-0 right-0 opacity-0 transition-all pointer-events-none delay-200"
-          :class="{
-            '-translate-x-8 translate-y-10 opacity-100 pointer-events-auto':
-              isOpen,
-          }"
-        >
-          <icon :name="'delete'"></icon>
-        </button>
-      </div>
-    </div>
+    <actions
+      :editMode="editMode"
+      :isOpen="isOpen"
+      @toggle-action="toggleAction"
+      @resolved-action="resolvedAction"
+      @change-open-action="changeOpenAction"
+      @edit-todo="editTodo"
+      @delete-action="deleteAction"
+    />
   </li>
 </template>
 
 <script>
 import store from "../store";
-import Icon from "./UI/Icon.vue";
+import Actions from "./UI/Actions.vue";
 
 export default {
   components: {
-    Icon,
+    Actions,
   },
 
   data() {
@@ -140,11 +81,22 @@ export default {
 
     changeOpenAction() {
       this.editMode = true;
+      this.editText = this.$props.item.title;
+
       this.$nextTick(() => {
         this.$refs.editInput.focus();
-        this.editText = this.$props.item.title;
       });
     },
+
+    // changeOpenAction() {
+    //   this.editMode = true;
+    //   this.editText = this.$props.item.title;
+
+    //   this.$nextTick(() => {
+    //     console.log(this.$refs.editInput);
+    //     this.$refs.editInput.focus();
+    //   });
+    // },
 
     editTodo() {
       if (this.editText) {
@@ -153,6 +105,7 @@ export default {
       } else {
         this.deleteAction();
       }
+      this.$emit("close");
     },
 
     resolvedAction() {
@@ -160,7 +113,7 @@ export default {
         this.editMode = false;
       }
       this.$emit("close");
-      this.$props.item.resolved = !this.$props.item.resolved;
+      store.commit("RESOLVE_TASK", this.$props.item);
     },
 
     deleteAction() {

@@ -1,5 +1,5 @@
 <template>
-  <section class="max-w-[400px] mx-auto mt-14 px-6">
+  <section class="max-w-[400px] mx-auto my-14 px-6">
     <input-add
       v-model="todoValue"
       :inputError="inputError"
@@ -29,7 +29,15 @@ export default {
     items() {
       return store.state.tasks;
     },
+
+    formatTime() {
+      return new Date().toLocaleTimeString("en-GB", {
+        hour: "numeric",
+        minute: "numeric",
+      });
+    },
   },
+
   methods: {
     startTimer() {
       this.inputError = true;
@@ -52,10 +60,7 @@ export default {
 
       store.dispatch("addTask", {
         title: this.todoValue.trim(),
-        recordingTime: new Date().toLocaleTimeString("en-GB", {
-          hour: "numeric",
-          minute: "numeric",
-        }),
+        recordingTime: this.formatTime,
         resolved: false,
       });
 
