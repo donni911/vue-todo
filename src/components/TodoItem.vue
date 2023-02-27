@@ -14,10 +14,10 @@
         <transition name="fade" mode="out-in">
           <input
             v-show="editMode"
-            class="focus:border-0 mt-4 w-full border-primary-200 h-8 p-1 rounded-xl"
             v-model="editText"
             @keyup.enter="editTodo"
             ref="editInput"
+            class="focus:border-0 mt-4 w-full border-primary-200 h-8 p-1 rounded-xl"
             type="text"
             placeholder="Edit todo"
           />
@@ -64,6 +64,8 @@ export default {
 
   methods: {
     toggleAction() {
+      this.$el.scrollIntoView({ behavior: "smooth" });
+
       if (this.editMode) {
         this.editMode = false;
       }
@@ -85,18 +87,9 @@ export default {
 
       this.$nextTick(() => {
         this.$refs.editInput.focus();
+        this.$el.scrollIntoView({ behavior: "smooth" });
       });
     },
-
-    // changeOpenAction() {
-    //   this.editMode = true;
-    //   this.editText = this.$props.item.title;
-
-    //   this.$nextTick(() => {
-    //     console.log(this.$refs.editInput);
-    //     this.$refs.editInput.focus();
-    //   });
-    // },
 
     editTodo() {
       if (this.editText) {

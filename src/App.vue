@@ -1,5 +1,5 @@
 <template>
-  <section class="max-w-[400px] mx-auto my-14 px-6">
+  <section class="max-w-[400px] mx-auto my-14 pb-14 px-6">
     <input-add
       v-model="todoValue"
       :inputError="inputError"
